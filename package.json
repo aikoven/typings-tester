@@ -10,17 +10,16 @@
     "test"
   ],
   "main": "./lib/index.js",
-  "typings": "./index.d.ts",
+  "typings": "./lib/index.d.ts",
   "bin": {
     "typings-tester": "./lib/cli.js"
   },
   "files": [
     "lib",
-    "src",
-    "index.d.ts"
+    "src"
   ],
   "scripts": {
-    "clean": "rimraf es6 lib",
+    "clean": "rimraf lib",
     "lint": "tslint -c tslint.json src/**/*.ts tests/**/*.ts",
     "test": "ts-node test/index.ts",
     "build": "tsc",

@@ -4,7 +4,6 @@
     "target": "es5",
     "lib": ["es5"],
     "declaration": true,
-    "declarationDir": ".",
     "outDir": "lib",
     "noImplicitReturns": true
   },
