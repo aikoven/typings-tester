@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "lib": ["es5"],
+    "declaration": true,
+    "declarationDir": ".",
+    "outDir": "lib",
+    "noImplicitReturns": true
+  },
+  "files": [
+    "src/index.ts",
+    "src/cli.ts"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "name": "typings-tester",
+  "version": "0.1.0",
+  "description": "TypeScript definition testing library",
+  "keywords": [
+    "typings",
+    "typescript",
+    "definition",
+    "declaration",
+    "test"
+  ],
+  "main": "./lib/index.js",
+  "typings": "./index.d.ts",
+  "bin": {
+    "typings-tester": "./lib/cli.js"
+  },
+  "files": [
+    "lib",
+    "src",
+    "index.d.ts"
+  ],
+  "scripts": {
+    "clean": "rimraf es6 lib",
+    "lint": "tslint -c tslint.json src/**/*.ts tests/**/*.ts",
+    "test": "ts-node test/index.ts",
+    "build": "tsc",
+    "prepublish": "npm run clean && npm run build"
+  },
+  "author": "Daniel Lytkin <dan.lytkin@gmail.com>",
+  "repository": "aikoven/typings-tester",
+  "license": "MIT",
+  "peerDependencies": {
+    "typescript": "~2"
+  },
+  "devDependencies": {
+    "@types/commander": "^2.3.30",
+    "@types/node": "^6.0.48",
+    "@types/tape": "^4.2.28",
+    "rimraf": "^2.5.4",
+    "tape": "^4.6.2",
+    "ts-node": "^1.7.0",
+    "tslint": "^3.15.1",
+    "typescript": "^2.0.10"
+  },
+  "dependencies": {
+    "commander": "^2.9.0"
+  }
+}
