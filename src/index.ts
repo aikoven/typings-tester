@@ -1,15 +1,26 @@
 import * as ts from "typescript";
 
 
-function handleDiagnostics(type: string, diagnostics: ts.Diagnostic[]) {
+function handleDiagnostics(type: string, diagnostics: ts.Diagnostic[],
+                           bail: boolean = false) {
+  const ret = [];
+
   for (const diagnostic of diagnostics) {
     const {line, character} =
       diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start);
     const message =
       ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n');
-    throw new Error(`${type}: ${diagnostic.file.fileName} ` +
-                    `(${line + 1}, ${character + 1}): ${message}`);
+
+    const text = `${type}: ${diagnostic.file.fileName} ` +
+                 `(${line + 1}, ${character + 1}): ${message}`;
+
+    if (bail)
+      throw new Error(text);
+
+    ret.push(text);
   }
+
+  return ret;
 }
 
 function forEachExpectedFailureNodes(node: ts.Node,
@@ -25,7 +36,8 @@ function forEachExpectedFailureNodes(node: ts.Node,
 }
 
 
-export function check(files: string[], tsConfigPath: string) {
+export function check(files: string[], tsConfigPath: string,
+                      bail: boolean = false) {
   const {config, error} = ts.readConfigFile(tsConfigPath, ts.sys.readFile);
 
   if (error) {
@@ -34,8 +46,14 @@ export function check(files: string[], tsConfigPath: string) {
 
   const program = ts.createProgram(files, config.compilerOptions);
 
-  handleDiagnostics('Global', program.getGlobalDiagnostics());
-  handleDiagnostics('Syntactic', program.getSyntacticDiagnostics());
+  const allErrors = [];
+
+  const global = handleDiagnostics('Global',
+    program.getGlobalDiagnostics(), bail);
+  const syntax = handleDiagnostics('Syntactic',
+    program.getSyntacticDiagnostics(), bail);
+
+  allErrors.push(...global, ...syntax);
 
   for (const sourceFile of program.getSourceFiles()) {
     let semantic = program.getSemanticDiagnostics(sourceFile);
@@ -56,23 +74,31 @@ export function check(files: string[], tsConfigPath: string) {
         if (failures.length === 0) {
           const {line, character} =
             sourceFile.getLineAndCharacterOfPosition(node.getStart());
-          throw new Error(`Expected error: ${sourceFile.fileName} ` +
+          const message = `Expected error: ${sourceFile.fileName} ` +
                           `(${line + 1}, ${character + 1}):\n` +
-                          node.getText());
+                          node.getText();
+
+          if (bail)
+            throw new Error(message);
+
+          allErrors.push(message);
         }
 
         semantic = leftSemantics;
       });
     }
 
-    handleDiagnostics('Semantic', semantic);
+    allErrors.push(...handleDiagnostics('Semantic', semantic, bail));
   }
+
+  if (allErrors.length > 0)
+    throw new Error(allErrors.join('\n\n'));
 }
 
-export function checkDirectory(path: string) {
+export function checkDirectory(path: string, bail: boolean = false) {
   const files = ts.sys.readDirectory(path, ['.ts', '.tsx']);
   const tsConfigPath = ts.findConfigFile(path, ts.sys.fileExists);
 
-  check(files, tsConfigPath);
+  check(files, tsConfigPath, bail);
 }
 

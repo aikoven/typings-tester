@@ -9,12 +9,13 @@ commander
   .usage('[options] <file ...>')
   .option('-d --dir [dir]', "Path to directory to check")
   .option('-c --config [config]', "Path to tsconfig.json")
+  .option('--bail', "Exit on first error")
   .parse(process.argv);
 
 
 if (commander['dir']) {
   try {
-    checkDirectory(commander['dir']);
+    checkDirectory(commander['dir'], !!commander['bail']);
   } catch (e) {
     abort(e.message);
   }
@@ -25,7 +26,7 @@ if (commander['dir']) {
     abort('No tsconfig.json path specified');
   } else {
     try {
-      check(commander.args, commander['config']);
+      check(commander.args, commander['config'], !!commander['bail']);
     } catch (e) {
       abort(e.message);
     }
