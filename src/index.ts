@@ -1,4 +1,5 @@
 import * as ts from "typescript";
+import {dirname} from "path";
 
 
 function handleDiagnostics(type: string, diagnostics: ts.Diagnostic[],
@@ -53,7 +54,16 @@ export function check(files: string[], tsConfigPath: string,
     throw new Error(ts.flattenDiagnosticMessageText(error.messageText, '\n'));
   }
 
-  const program = ts.createProgram(files, config.compilerOptions);
+  const {options, errors} =
+    ts.convertCompilerOptionsFromJson(config.compilerOptions,
+      dirname(tsConfigPath));
+
+  if (errors.length > 0) {
+    throw new Error(ts
+      .flattenDiagnosticMessageText(errors[0].messageText, '\n'));
+  }
+
+  const program = ts.createProgram(files, options);
 
   const allErrors = [];
 
