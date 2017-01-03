@@ -6,13 +6,22 @@ function handleDiagnostics(type: string, diagnostics: ts.Diagnostic[],
   const ret = [];
 
   for (const diagnostic of diagnostics) {
-    const {line, character} =
-      diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start);
+    const parts = [`${type}:`];
+
+    if (diagnostic.file) {
+      const {line, character} =
+        diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start);
+
+      parts.push(`${diagnostic.file.fileName}`,
+                 `(${line + 1}, ${character + 1})`);
+    }
+
     const message =
       ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n');
 
-    const text = `${type}: ${diagnostic.file.fileName} ` +
-                 `(${line + 1}, ${character + 1}): ${message}`;
+    parts.push(message);
+
+    const text = parts.join(' ');
 
     if (bail)
       throw new Error(text);
