@@ -23,7 +23,14 @@
     "lint": "tslint -c tslint.json src/**/*.ts tests/**/*.ts",
     "test": "ts-node test/index.ts",
     "build": "tsc",
-    "prepublish": "npm run clean && npm run build"
+    "prepublish": "npm run clean && npm run build",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "author": "Daniel Lytkin <dan.lytkin@gmail.com>",
   "repository": "aikoven/typings-tester",
@@ -34,6 +41,9 @@
   "devDependencies": {
     "@types/node": "^8.0.58",
     "@types/tape": "^4.2.31",
+    "husky": "^0.14.3",
+    "lint-staged": "^6.0.0",
+    "prettier": "^1.9.2",
     "rimraf": "^2.5.4",
     "tape": "^4.8.0",
     "ts-node": "^4.0.1",

@@ -4,12 +4,12 @@ function f(a: number) {
 
 /* typings:expect-error */
 {
-  const a: number = '';
+  const a: number = "";
 }
 
 // typings:expect-error
 function shouldFail(a: number) {
-  a = '';
+  a = "";
 }
 
 {
