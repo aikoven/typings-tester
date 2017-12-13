@@ -76,51 +76,53 @@ export function check(files: string[], tsConfigPath: string,
       .flattenDiagnosticMessageText(errors[0].messageText, '\n'));
   }
 
-  const program = ts.createProgram(files, options);
-
   const allErrors = [];
 
-  const global = handleDiagnostics('Global',
-    program.getGlobalDiagnostics(), bail);
-  const syntax = handleDiagnostics('Syntactic',
-    program.getSyntacticDiagnostics(), bail);
+  for (const file of files) {
+    const program = ts.createProgram([file], options);
 
-  allErrors.push(...global, ...syntax);
+    const global = handleDiagnostics('Global',
+      program.getGlobalDiagnostics(), bail);
+    const syntax = handleDiagnostics('Syntactic',
+      program.getSyntacticDiagnostics(), bail);
 
-  for (const sourceFile of program.getSourceFiles()) {
-    let semantic = program.getSemanticDiagnostics(sourceFile);
+    allErrors.push(...global, ...syntax);
 
-    if (program.getRootFileNames().indexOf(sourceFile.fileName) !== -1) {
-      forEachExpectedFailureNodes(sourceFile, node => {
-        const failures: ts.Diagnostic[] = [];
-        const leftSemantics: ts.Diagnostic[] = [];
+    for (const sourceFile of program.getSourceFiles()) {
+      let semantic = program.getSemanticDiagnostics(sourceFile);
 
-        for (const diag of semantic) {
-          if (node.pos <= diag.start && diag.start + diag.length <= node.end) {
-            failures.push(diag);
-          } else {
-            leftSemantics.push(diag);
+      if (program.getRootFileNames().indexOf(sourceFile.fileName) !== -1) {
+        forEachExpectedFailureNodes(sourceFile, node => {
+          const failures: ts.Diagnostic[] = [];
+          const leftSemantics: ts.Diagnostic[] = [];
+
+          for (const diag of semantic) {
+            if (node.pos <= diag.start && diag.start + diag.length <= node.end) {
+              failures.push(diag);
+            } else {
+              leftSemantics.push(diag);
+            }
           }
-        }
 
-        if (failures.length === 0) {
-          const {line, character} =
-            sourceFile.getLineAndCharacterOfPosition(node.getStart());
-          const message = `Expected error: ${sourceFile.fileName} ` +
-                          `(${line + 1}, ${character + 1}):\n` +
-                          node.getText();
+          if (failures.length === 0) {
+            const {line, character} =
+              sourceFile.getLineAndCharacterOfPosition(node.getStart());
+            const message = `Expected error: ${sourceFile.fileName} ` +
+                            `(${line + 1}, ${character + 1}):\n` +
+                            node.getText();
 
-          if (bail)
-            throw new Error(message);
+            if (bail)
+              throw new Error(message);
 
-          allErrors.push(message);
-        }
+            allErrors.push(message);
+          }
 
-        semantic = leftSemantics;
-      });
+          semantic = leftSemantics;
+        });
+      }
+
+      allErrors.push(...handleDiagnostics('Semantic', semantic, bail));
     }
-
-    allErrors.push(...handleDiagnostics('Semantic', semantic, bail));
   }
 
   if (allErrors.length > 0)
