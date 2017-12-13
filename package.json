@@ -28,7 +28,7 @@
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "prettier --write",
+      "prettier --single-quote --trailing-comma all --no-bracket-spacing --write",
       "git add"
     ]
   },

@@ -6,7 +6,9 @@
     "downlevelIteration": true,
     "declaration": true,
     "outDir": "lib",
-    "noImplicitReturns": true
+    "strict": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true
   },
   "files": [
     "src/index.ts",
