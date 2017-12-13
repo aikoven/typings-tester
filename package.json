@@ -32,16 +32,15 @@
     "typescript": "~2"
   },
   "devDependencies": {
-    "@types/commander": "^2.3.30",
-    "@types/node": "^6.0.48",
-    "@types/tape": "^4.2.28",
+    "@types/node": "^8.0.58",
+    "@types/tape": "^4.2.31",
     "rimraf": "^2.5.4",
-    "tape": "^4.6.2",
-    "ts-node": "^1.7.0",
-    "tslint": "^3.15.1",
-    "typescript": "^2.0.10"
+    "tape": "^4.8.0",
+    "ts-node": "^4.0.1",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.2"
   },
   "dependencies": {
-    "commander": "^2.9.0"
+    "commander": "^2.12.2"
   }
 }

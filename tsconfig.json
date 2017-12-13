@@ -2,7 +2,8 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es5",
-    "lib": ["es5"],
+    "lib": ["es2015"],
+    "downlevelIteration": true,
     "declaration": true,
     "outDir": "lib",
     "noImplicitReturns": true

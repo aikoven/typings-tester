@@ -2,7 +2,7 @@ import * as ts from "typescript";
 import {dirname} from "path";
 
 
-function handleDiagnostics(type: string, diagnostics: ts.Diagnostic[],
+function handleDiagnostics(type: string, diagnostics: Iterable<ts.Diagnostic>,
                            bail: boolean = false) {
   const ret = [];
 
