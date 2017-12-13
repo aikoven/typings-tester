@@ -33,10 +33,23 @@ function handleDiagnostics(type: string, diagnostics: Iterable<ts.Diagnostic>,
   return ret;
 }
 
+function findLastNodeComment(node: ts.Node): string {
+  const text = node.getFullText();
+  const commentRanges = ts.getLeadingCommentRanges(node.getFullText(), 0);
+
+  if (commentRanges == null || commentRanges.length === 0) {
+    return '';
+  }
+
+  const {pos, end} = commentRanges[commentRanges.length - 1];
+
+  return text.substring(pos, end);
+}
+
 function forEachExpectedFailureNodes(node: ts.Node,
                                      cb: (node: ts.Node) => void) {
   if (node.kind !== ts.SyntaxKind.SourceFile &&
-      node.getFullText().match(/^\s*\/[\/*] typings:expect-error/)) {
+      findLastNodeComment(node).match(/^\/[\/*] typings:expect-error/)) {
     cb(node);
   } else {
     ts.forEachChild(node, child => {
