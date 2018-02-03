@@ -1,4 +1,5 @@
 import * as ts from 'typescript';
+import * as fs from 'fs';
 import {dirname} from 'path';
 
 function handleDiagnostics(
@@ -93,6 +94,10 @@ export function check(
   const allErrors: string[] = [];
 
   for (const file of files) {
+    if (!fs.existsSync(file)) {
+      throw new Error(`File '${file}' not found.`);
+    }
+
     const program = ts.createProgram([file], options);
 
     const global = handleDiagnostics(
