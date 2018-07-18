@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
 import * as fs from 'fs';
-import {dirname} from 'path';
+import {dirname, normalize} from 'path';
 
 function handleDiagnostics(
   type: string,
@@ -116,7 +116,9 @@ export function check(
     for (const sourceFile of program.getSourceFiles()) {
       let semantic = program.getSemanticDiagnostics(sourceFile);
 
-      if (program.getRootFileNames().indexOf(sourceFile.fileName) !== -1) {
+      const rootFileNames = program.getRootFileNames().map(normalize);
+      const fileName = normalize(sourceFile.fileName);
+      if (rootFileNames.indexOf(fileName) !== -1) {
         forEachExpectedFailureNodes(sourceFile, node => {
           const failures: ts.Diagnostic[] = [];
           const leftSemantics: ts.Diagnostic[] = [];
