@@ -163,5 +163,9 @@ export function checkDirectory(path: string, bail: boolean = false) {
   const files = ts.sys.readDirectory(path, ['.ts', '.tsx']);
   const tsConfigPath = ts.findConfigFile(path, ts.sys.fileExists);
 
+  if (!tsConfigPath) {
+    throw new Error(`Cannot find TypeScript config file in ${path}.`);
+  }
+
   check(files, tsConfigPath, bail);
 }
