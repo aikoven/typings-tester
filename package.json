@@ -36,7 +36,7 @@
   "repository": "aikoven/typings-tester",
   "license": "MIT",
   "peerDependencies": {
-    "typescript": "~2"
+    "typescript": "~2 || ~3"
   },
   "devDependencies": {
     "@types/node": "^8.0.58",
@@ -48,7 +48,7 @@
     "tape": "^4.8.0",
     "ts-node": "^4.0.1",
     "tslint": "^5.8.0",
-    "typescript": "^2.6.2"
+    "typescript": "~3.0.0"
   },
   "dependencies": {
     "commander": "^2.12.2"
