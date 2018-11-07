@@ -3,6 +3,8 @@
 A library aimed to aid testing of TypeScript definitions. 
 Checks TypeScript files for syntactic, expected and unexpected semantic (type) errors.
 
+**Note:** _There's an [official tool](https://github.com/Microsoft/dtslint#write-tests) that provides similar functionality and might be a better choice._
+
 ## Installation
  
     $ npm install -D typings-tester
